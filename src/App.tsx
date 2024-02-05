@@ -1,6 +1,14 @@
+import { FormEvent, useState } from "react";
 import styles from "./App.module.scss";
 
 function App() {
+  const [todo, setTodo] = useState<string[]>([]);
+  const [todoText, setTodoText] = useState("");
+
+  const addTodo = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
+
   return (
     <main className={`${styles.readingZone} ${styles.flowContainer}`}>
       <h1>TODO List</h1>
@@ -8,7 +16,12 @@ function App() {
         <h2>Create TODO</h2>
         <div className={styles.formControl}>
           <label htmlFor="todo-description">Description</label>
-          <input type="text" id="todo-description" name="description" />
+          <input
+            onChange={(e) => setTodoText(e.target.value)}
+            type="text"
+            id="todo-description"
+            name="description"
+          />
         </div>
         <button className={styles.buttonPrimary}>➕ Add</button>
       </form>
@@ -32,8 +45,12 @@ function App() {
       </ul>
       <menu className={styles.filtersMenu}>
         <li>All</li>
-        <li><a href="#">Open</a></li>
-        <li><a href="#">Done</a></li>
+        <li>
+          <a href="#">Open</a>
+        </li>
+        <li>
+          <a href="#">Done</a>
+        </li>
       </menu>
     </main>
   );
