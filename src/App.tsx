@@ -2,17 +2,19 @@ import { FormEvent, useState } from "react";
 import styles from "./App.module.scss";
 
 function App() {
-  const [todo, setTodo] = useState<string[]>([]);
+  const [todos, setTodos] = useState<string[]>([]);
   const [todoText, setTodoText] = useState("");
 
   const addTodo = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    setTodos([...todos, todoText]);
   };
 
   return (
     <main className={`${styles.readingZone} ${styles.flowContainer}`}>
       <h1>TODO List</h1>
-      <form name="addTodo" className={styles.addTodoForm}>
+      <form onSubmit={addTodo} name="addTodo" className={styles.addTodoForm}>
         <h2>Create TODO</h2>
         <div className={styles.formControl}>
           <label htmlFor="todo-description">Description</label>
@@ -26,7 +28,7 @@ function App() {
         <button className={styles.buttonPrimary}>➕ Add</button>
       </form>
       <ul>
-        <li className={styles.todoItem}>
+        {/* <li className={styles.todoItem}>
           <input type="checkbox" id="todo1-checkbox" checked />
           <label htmlFor="todo1-checkbox">Create a new project with vite</label>
         </li>
@@ -41,7 +43,10 @@ function App() {
         <li className={styles.todoItem}>
           <input type="checkbox" id="todo4-checkbox" />
           <label htmlFor="todo4-checkbox">Develop my app</label>
-        </li>
+        </li> */}
+
+        {todos.map(todo => <li>{todo}</li>)}
+
       </ul>
       <menu className={styles.filtersMenu}>
         <li>All</li>
