@@ -7,7 +7,7 @@ function App() {
 
   const addTodo = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     setTodos([...todos, todoText]);
   };
 
@@ -27,27 +27,7 @@ function App() {
         </div>
         <button className={styles.buttonPrimary}>➕ Add</button>
       </form>
-      <ul>
-        {/* <li className={styles.todoItem}>
-          <input type="checkbox" id="todo1-checkbox" checked />
-          <label htmlFor="todo1-checkbox">Create a new project with vite</label>
-        </li>
-        <li className={styles.todoItem}>
-          <input type="checkbox" id="todo2-checkbox" checked />
-          <label htmlFor="todo2-checkbox">npm install</label>
-        </li>
-        <li className={styles.todoItem}>
-          <input type="checkbox" id="todo3-checkbox" checked />
-          <label htmlFor="todo3-checkbox">npm run dev</label>
-        </li>
-        <li className={styles.todoItem}>
-          <input type="checkbox" id="todo4-checkbox" />
-          <label htmlFor="todo4-checkbox">Develop my app</label>
-        </li> */}
-
-        {todos.map(todo => <li>{todo}</li>)}
-
-      </ul>
+      <TodosList todos={todos} />
       <menu className={styles.filtersMenu}>
         <li>All</li>
         <li>
@@ -58,6 +38,36 @@ function App() {
         </li>
       </menu>
     </main>
+  );
+}
+
+interface TodosListProps {
+  todos: string[];
+}
+
+function TodosList({ todos }: TodosListProps) {
+  const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
+
+  const handleCheckboxChange = (index: number) => {
+    const newCheckedItems = [...checkedItems];
+    newCheckedItems[index] = !newCheckedItems[index];
+    setCheckedItems(newCheckedItems);
+  };
+
+  return (
+    <ul>
+      {todos.map((todo, i) => (
+        <li className={styles.todoItem} key={crypto.randomUUID()}>
+          <input
+            type="checkbox"
+            id={`todo${i}-checkbox`}
+            checked={checkedItems[i]}
+            onChange={() => handleCheckboxChange(i)}
+          />
+          <label htmlFor={`todo${i}-checkbox`}>{todo}</label>
+        </li>
+      ))}
+    </ul>
   );
 }
 
