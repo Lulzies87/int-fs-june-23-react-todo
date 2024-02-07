@@ -1,9 +1,14 @@
 import { FormEvent, useState } from "react";
 import styles from "./App.module.scss";
+import TodosList from "./components/TodosList";
+import Filters from "./components/Filters";
 
 function App() {
   const [todos, setTodos] = useState<string[]>([]);
   const [todoText, setTodoText] = useState("");
+  const [activeFilter, setActiveFilter] = useState<"all" | "open" | "done">(
+    "all"
+  );
 
   const addTodo = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,47 +32,9 @@ function App() {
         </div>
         <button className={styles.buttonPrimary}>➕ Add</button>
       </form>
-      <TodosList todos={todos} />
-      <menu className={styles.filtersMenu}>
-        <li>All</li>
-        <li>
-          <a href="#">Open</a>
-        </li>
-        <li>
-          <a href="#">Done</a>
-        </li>
-      </menu>
+      <TodosList todos={todos} filter={activeFilter} />
+      <Filters activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
     </main>
-  );
-}
-
-interface TodosListProps {
-  todos: string[];
-}
-
-function TodosList({ todos }: TodosListProps) {
-  const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
-
-  const handleCheckboxChange = (index: number) => {
-    const newCheckedItems = [...checkedItems];
-    newCheckedItems[index] = !newCheckedItems[index];
-    setCheckedItems(newCheckedItems);
-  };
-
-  return (
-    <ul>
-      {todos.map((todo, i) => (
-        <li className={styles.todoItem} key={crypto.randomUUID()}>
-          <input
-            type="checkbox"
-            id={`todo${i}-checkbox`}
-            checked={checkedItems[i]}
-            onChange={() => handleCheckboxChange(i)}
-          />
-          <label htmlFor={`todo${i}-checkbox`}>{todo}</label>
-        </li>
-      ))}
-    </ul>
   );
 }
 
