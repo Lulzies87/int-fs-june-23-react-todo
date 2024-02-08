@@ -7,69 +7,84 @@ interface TodosListProps {
 }
 
 function TodosList({ todos, filter }: TodosListProps) {
-  const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
+  const [todoStates, setTodoStates] = useState<{ [key: string]: boolean }>({});
 
-  const handleCheckboxChange = (index: number) => {
-    const newCheckedItems = [...checkedItems];
-    newCheckedItems[index] = !newCheckedItems[index];
-    setCheckedItems(newCheckedItems);
+  const handleTodoCheckboxChange = (todoId: string) => {
+    setTodoStates(prevState => ({
+      ...prevState,
+      [todoId]: !prevState[todoId],
+    }));
   };
 
   const getOpenTodos = () => {
-    return todos.filter((_, index) => !checkedItems[index]);
+    return todos.filter((todo) => !todoStates[todo]);
   };
 
   const getDoneTodos = () => {
-    return todos.filter((_, index) => checkedItems[index]);
+    return todos.filter((todo) => todoStates[todo]);
   };
 
   return (
     <ul>
       {filter === "all"
-        ? todos.map((todo, i) => {
-            const todoId = crypto.randomUUID();
+        ? todos.map((todo) => {
             return (
-              <li className={styles.todoItem} key={todoId}>
-                <input
-                  type="checkbox"
-                  id={`todo-${todoId}`}
-                  checked={checkedItems[i]}
-                  onChange={() => handleCheckboxChange(i)}
-                />
-                <label htmlFor={`todo-${todoId}`}>{todo}</label>
-              </li>
+              <TodoItem
+                key={todo}
+                todo={todo}
+                todoId={todo}
+                isChecked={todoStates[todo] || false}
+                onCheckboxChange={() => handleTodoCheckboxChange(todo)}
+              />
             );
           })
         : filter === "open"
-        ? getOpenTodos().map((todo, i) => {
-            const todoId = crypto.randomUUID();
+        ? getOpenTodos().map((todo) => {
             return (
-              <li className={styles.todoItem} key={todoId}>
-                <input
-                  type="checkbox"
-                  id={`todo-${todoId}`}
-                  checked={checkedItems[i]}
-                  onChange={() => handleCheckboxChange(i)}
-                />
-                <label htmlFor={`todo-${todoId}`}>{todo}</label>
-              </li>
+              <TodoItem
+                key={todo}
+                todo={todo}
+                todoId={todo}
+                isChecked={todoStates[todo] || false}
+                onCheckboxChange={() => handleTodoCheckboxChange(todo)}
+              />
             );
           })
-        : getDoneTodos().map((todo, i) => {
-            const todoId = crypto.randomUUID();
+        : getDoneTodos().map((todo) => {
             return (
-              <li className={styles.todoItem} key={todoId}>
-                <input
-                  type="checkbox"
-                  id={`todo-${todoId}`}
-                  checked={checkedItems[i]}
-                  onChange={() => handleCheckboxChange(i)}
-                />
-                <label htmlFor={`todo-${todoId}`}>{todo}</label>
-              </li>
+              <TodoItem
+                key={todo}
+                todo={todo}
+                todoId={todo}
+                isChecked={todoStates[todo] || false}
+                onCheckboxChange={() => handleTodoCheckboxChange(todo)}
+              />
             );
           })}
     </ul>
+  );
+}
+
+interface TodoItemProps {
+  todo: string;
+  todoId: string;
+  isChecked: boolean;
+  onCheckboxChange: () => void;
+}
+
+function TodoItem({ todo, todoId, isChecked, onCheckboxChange }: TodoItemProps) {
+  return (
+    <li className={styles.todoItem}>
+      <input
+        type="checkbox"
+        id={`todo-${todoId}`}
+        checked={isChecked}
+        onChange={onCheckboxChange}
+      />
+      <label 
+      htmlFor={`todo-${todoId}`}
+      >{todo}</label>
+    </li>
   );
 }
 
