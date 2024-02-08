@@ -32,7 +32,6 @@ function TodosList({ todos, filter }: TodosListProps) {
               <TodoItem
                 key={todo}
                 todo={todo}
-                todoId={todo}
                 isChecked={todoStates[todo] || false}
                 onCheckboxChange={() => handleTodoCheckboxChange(todo)}
               />
@@ -44,7 +43,6 @@ function TodosList({ todos, filter }: TodosListProps) {
               <TodoItem
                 key={todo}
                 todo={todo}
-                todoId={todo}
                 isChecked={todoStates[todo] || false}
                 onCheckboxChange={() => handleTodoCheckboxChange(todo)}
               />
@@ -55,7 +53,6 @@ function TodosList({ todos, filter }: TodosListProps) {
               <TodoItem
                 key={todo}
                 todo={todo}
-                todoId={todo}
                 isChecked={todoStates[todo] || false}
                 onCheckboxChange={() => handleTodoCheckboxChange(todo)}
               />
@@ -67,22 +64,21 @@ function TodosList({ todos, filter }: TodosListProps) {
 
 interface TodoItemProps {
   todo: string;
-  todoId: string;
   isChecked: boolean;
   onCheckboxChange: () => void;
 }
 
-function TodoItem({ todo, todoId, isChecked, onCheckboxChange }: TodoItemProps) {
+function TodoItem({ todo, isChecked, onCheckboxChange }: TodoItemProps) {
   return (
     <li className={styles.todoItem}>
       <input
         type="checkbox"
-        id={`todo-${todoId}`}
+        id={`todo-${todo}`}
         checked={isChecked}
         onChange={onCheckboxChange}
       />
       <label 
-      htmlFor={`todo-${todoId}`}
+      htmlFor={`todo-${todo}`}
       >{todo}</label>
     </li>
   );
