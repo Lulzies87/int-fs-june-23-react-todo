@@ -1,63 +1,25 @@
-import { useState } from "react";
 import styles from "../App.module.scss";
+import { Todo } from "../App";
 
 interface TodosListProps {
-  todos: string[];
-  filter: "all" | "open" | "done";
+  todos: Todo[];
+  onTodoChecked: (todoId: string) => void;
 }
 
-function TodosList({ todos, filter }: TodosListProps) {
-  const [todoStates, setTodoStates] = useState<{ [key: string]: boolean }>({});
-
-  const handleTodoCheckboxChange = (todoId: string) => {
-    setTodoStates(prevState => ({
-      ...prevState,
-      [todoId]: !prevState[todoId],
-    }));
-  };
-
-  const getOpenTodos = () => {
-    return todos.filter((todo) => !todoStates[todo]);
-  };
-
-  const getDoneTodos = () => {
-    return todos.filter((todo) => todoStates[todo]);
-  };
+function TodosList({ todos, onTodoChecked }: TodosListProps) {
 
   return (
     <ul>
-      {filter === "all"
-        ? todos.map((todo) => {
-            return (
-              <TodoItem
-                key={todo}
-                todo={todo}
-                isChecked={todoStates[todo] || false}
-                onCheckboxChange={() => handleTodoCheckboxChange(todo)}
-              />
-            );
-          })
-        : filter === "open"
-        ? getOpenTodos().map((todo) => {
-            return (
-              <TodoItem
-                key={todo}
-                todo={todo}
-                isChecked={todoStates[todo] || false}
-                onCheckboxChange={() => handleTodoCheckboxChange(todo)}
-              />
-            );
-          })
-        : getDoneTodos().map((todo) => {
-            return (
-              <TodoItem
-                key={todo}
-                todo={todo}
-                isChecked={todoStates[todo] || false}
-                onCheckboxChange={() => handleTodoCheckboxChange(todo)}
-              />
-            );
-          })}
+      {todos.map((todo) => {
+        return (
+          <TodoItem
+            key={todo.id}
+            todo={todo.text}
+            isChecked={todo.checked}
+            onCheckboxChange={() => onTodoChecked(todo.id)}
+          />
+        );
+      })}
     </ul>
   );
 }
@@ -76,10 +38,9 @@ function TodoItem({ todo, isChecked, onCheckboxChange }: TodoItemProps) {
         id={`todo-${todo}`}
         checked={isChecked}
         onChange={onCheckboxChange}
+        value={isChecked ? "true" : "false"}
       />
-      <label 
-      htmlFor={`todo-${todo}`}
-      >{todo}</label>
+      <label htmlFor={`todo-${todo}`}>{todo}</label>
     </li>
   );
 }

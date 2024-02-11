@@ -3,8 +3,10 @@ import styles from "./App.module.scss";
 import TodosList from "./components/TodosList";
 import Filters from "./components/Filters";
 
+export type Todo = { text: string; checked: boolean; id: string };
+
 function App() {
-  const [todos, setTodos] = useState<string[]>([]);
+  const [todos, setTodos] = useState<Todo[]>([]);
   const [todoText, setTodoText] = useState("");
   const [activeFilter, setActiveFilter] = useState<"all" | "open" | "done">(
     "all"
@@ -13,8 +15,18 @@ function App() {
   const addTodo = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setTodos([...todos, todoText]);
+    setTodos([
+      ...todos,
+      { text: todoText, checked: false, id: crypto.randomUUID() },
+    ]);
   };
+
+  const visibleTodos =
+    activeFilter === "all"
+      ? todos
+      : activeFilter === "open"
+      ? todos.filter((todo) => !todo.checked)
+      : todos.filter((todo) => todo.checked);
 
   return (
     <main className={`${styles.readingZone} ${styles.flowContainer}`}>
@@ -32,7 +44,16 @@ function App() {
         </div>
         <button className={styles.buttonPrimary}>➕ Add</button>
       </form>
-      <TodosList todos={todos} filter={activeFilter} />
+      <TodosList
+        todos={visibleTodos}
+        onTodoChecked={(todoId) =>
+          setTodos(
+            todos.map((todo) =>
+              todo.id === todoId ? { ...todo, checked: !todo.checked } : todo
+            )
+          )
+        }
+      />
       <Filters activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
     </main>
   );
